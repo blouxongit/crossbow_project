@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Tuple, Any
 
 import cv2 as cv
 import numpy as np
@@ -41,7 +41,9 @@ class FilesManager:
                 images_paths += list(self.directory_images_right_camera.glob(extension))
         return images_paths
 
-    def get_matching_images_path(self, starting_point=None) -> List[List[Path, Path]]:
+    def get_matching_images_path(self, starting_point=None) -> Tuple[List[float], List[List[Path, Path]]]:
+
+        timestamps = []
         matched_images = []
 
         if starting_point:
@@ -62,10 +64,12 @@ class FilesManager:
             closest_image_right_camera = find_closest_image_by_timestamp(
                 image_left_camera.identifier, images_right_camera, i
             )
+            # TODO:
+            # associated_timestamp = something
+            matched_images.append([image_left_camera, closest_image_right_camera])
+            # timestamps.append(timestamp)
 
-            matched_images[i] = [image_left_camera, closest_image_right_camera]
-
-        return matched_images
+        return timestamps, matched_images
 
     def is_valid(self):
         if self.directory_images_left_camera is None or self.directory_images_right_camera is None:
