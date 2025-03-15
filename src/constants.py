@@ -1,4 +1,24 @@
+from enum import Enum
+
+
+class CameraIdentifier(Enum):
+    LEFT_CAMERA = 0
+    RIGHT_CAMERA = 1
+    UNDEFINED = 2
+
+
+class ColorDomain(Enum):
+    GRAYSCALE = 0
+    RGB = 1
+
+
+class VectorType(Enum):
+    SPEED = 0
+    ACCELERATION = 1
+
+
 ALLOWED_IMAGE_FORMATS = [".jpg", ".png", ".jpeg", ".tif"]
+
 
 VALID_JSON_SCHEMA = {
     "type": "object",

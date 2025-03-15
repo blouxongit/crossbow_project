@@ -1,12 +1,5 @@
-import numpy as np
-
-# The value at index i contains a list of 2 elements:
-# - At index 0: The np.ndarray of the 2d coordinates in the left image
-# - At index 1: The np.ndarray of the 2d coordinates in the right image
-
-
-def noop(projectiles_coordinates_2d):
-    return projectiles_coordinates_2d
+def noop(pair_projectiles_coordinates_2d):
+    return pair_projectiles_coordinates_2d
 
 
 def circle_detector_post_processing(projectiles_coordinates_2d):

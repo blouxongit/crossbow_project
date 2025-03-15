@@ -1,14 +1,7 @@
-from enum import Enum
-
 import numpy as np
 
 from configuration_reader import Config
-
-
-class CameraIdentifier(Enum):
-    LEFT_CAMERA = 0
-    RIGHT_CAMERA = 1
-    UNDEFINED = 2
+from src.constants import CameraIdentifier
 
 
 class HighSpeedCamera:
@@ -57,14 +50,16 @@ class CameraSetup:
 
     def update_from_config(self, config: Config):
         self.left_camera = HighSpeedCamera(
-            intrinsic_matrix=config.left_camera.intrinsic_matrix, extrinsic_matrix=config.left_camera.extrinsic_matrix
+            intrinsic_matrix=config.left_camera_config.intrinsic_matrix,
+            extrinsic_matrix=config.left_camera_config.extrinsic_matrix,
         )
         self.right_camera = HighSpeedCamera(
-            intrinsic_matrix=config.right_camera.intrinsic_matrix, extrinsic_matrix=config.right_camera.extrinsic_matrix
+            intrinsic_matrix=config.right_camera_config.intrinsic_matrix,
+            extrinsic_matrix=config.right_camera_config.extrinsic_matrix,
         )
 
-        self.left_camera.set_framerate(config.left_camera.framerate)
-        self.right_camera.set_framerate(config.right_camera.framerate)
+        self.left_camera.set_framerate(config.left_camera_config.framerate)
+        self.right_camera.set_framerate(config.right_camera_config.framerate)
 
         self.left_camera.set_identifier(CameraIdentifier.LEFT_CAMERA)
         self.right_camera.set_identifier(CameraIdentifier.RIGHT_CAMERA)
