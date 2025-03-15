@@ -6,6 +6,7 @@ from jsonschema import ValidationError, validate
 
 from constants import VALID_JSON_SCHEMA
 from src.constants import CameraIdentifier
+from scipy.spatial.transform import Rotation as R
 
 
 class Config:
@@ -56,9 +57,13 @@ class Config:
         ppx = config_camera["principalPointX"]
         ppy = config_camera["principalPointY"]
         position = np.array(config_camera["position"])
-        rotation = np.array(config_camera["rotation"])
+        yaw = config_camera["yaw"]
+        pitch = config_camera["pitch"]
+        roll = config_camera["roll"]
         framerate = config_camera["framerate"]
         images_folder_path = config_camera["imagesFolderPath"]
+
+        rotation = R.from_euler("xyz",[yaw,pitch,roll], degrees=True)
 
         intrinsic_matrix = self._get_intrinsic_matrix_from_params(focal_x, focal_y, skew, ppx, ppy)
         extrinsinc_matrix = self._get_extrinsic_matrix_from_params(rotation, position)

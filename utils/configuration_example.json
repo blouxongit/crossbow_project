@@ -1,17 +1,15 @@
 {
   "leftCamera": {
-    "focal_x": 1,
-    "focal_y": 1,
+    "focalX": 1,
+    "focalY": 1,
     "skew": 0,
     "principalPointX": 800,
     "principalPointY": 600,
     "position": [10, 20, 30],
-    "rotation": [
-      [1, 0, 0],
-      [0, 1, 0],
-      [0, 0, 1]
-    ],
-    "framerate": 100,
+     "yaw": 90,
+    "pitch": 10,
+    "roll": 0,
+    "framerate": 3000,
     "imagesFolderPath": "/home/myImagesFromLeftCamera/"
   },
 
@@ -22,12 +20,10 @@
     "principalPointX": 800,
     "principalPointY": 600,
     "position": [10, 50, 0],
-    "rotation": [
-      [1, 0, 0],
-      [0, 1, 0],
-      [0, 0, 1]
-    ],
-    "framerate": 100,
+    "yaw": 90,
+    "pitch": 10,
+    "roll": 0,
+    "framerate": 3000,
     "imagesFolderPath": "/home/myImagesFromRightCamera/"
   }
 }
