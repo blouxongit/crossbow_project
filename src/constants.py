@@ -12,11 +12,6 @@ class ColorDomain(Enum):
     RGB = 1
 
 
-class VectorType(Enum):
-    SPEED = 0
-    ACCELERATION = 1
-
-
 ALLOWED_IMAGE_FORMATS = [".jpg", ".png", ".jpeg", ".tif"]
 
 
@@ -37,7 +32,6 @@ VALID_JSON_SCHEMA = {
                 "yaw": {"type": "number"},
                 "pitch": {"type": "number"},
                 "roll": {"type": "number"},
-
                 "imagesFolderPath": {"type": "string"},
                 "framerate": {"type": "number"},
             },

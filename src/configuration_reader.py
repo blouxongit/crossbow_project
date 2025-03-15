@@ -3,10 +3,10 @@ from pathlib import Path
 
 import numpy as np
 from jsonschema import ValidationError, validate
+from scipy.spatial.transform import Rotation as Rot
 
 from constants import VALID_JSON_SCHEMA
 from src.constants import CameraIdentifier
-from scipy.spatial.transform import Rotation as R
 
 
 class Config:
@@ -63,7 +63,7 @@ class Config:
         framerate = config_camera["framerate"]
         images_folder_path = config_camera["imagesFolderPath"]
 
-        rotation = R.from_euler("xyz",[yaw,pitch,roll], degrees=True)
+        rotation = Rot.from_euler("xyz", [yaw, pitch, roll], degrees=True)
 
         intrinsic_matrix = self._get_intrinsic_matrix_from_params(focal_x, focal_y, skew, ppx, ppy)
         extrinsinc_matrix = self._get_extrinsic_matrix_from_params(rotation, position)

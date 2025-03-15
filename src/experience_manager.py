@@ -1,5 +1,4 @@
-from pathlib import Path
-from typing import List, Union
+from typing import List
 
 import cv2
 import numpy as np
@@ -7,11 +6,11 @@ from matplotlib import pyplot as plt
 
 from camera import CameraSetup
 from configuration_reader import Config
-from files_manager import FilesManager, read_image
+from files_manager import FilesManager
 from image_processor import ImagesPairProcessor
 from post_detecting_functions import noop
 from projectile_finder import AvailableProjectileFindersMethod
-from src.constants import ColorDomain, VectorType
+from src.constants import ColorDomain
 from src.data_types import ImagePair, Point2DPair, Point3D, TimedPoint2DPair, TimedPoint3D
 
 
