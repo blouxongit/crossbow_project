@@ -6,7 +6,6 @@ from src.experience_manager import ExperienceManager
 def run_experience(config: str):
     experience_manager = ExperienceManager(configuration_file_path=config)
 
-
     # These values can be modified in the event someone works on the repository.
     # As of today (March 2025), the only available method is "FIND_CIRCLES".
     # To add a new method, please refer to the "src/projectile_finder.py" file.

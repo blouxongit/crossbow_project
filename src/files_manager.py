@@ -44,7 +44,6 @@ class FilesManager:
         return [str(image_path) for image_path in images_paths]
 
     def create_list_timed_matching_image_path_pair(self, starting_point=None):
-
         if starting_point:
             # TODO : we should do something in case we want to process images after a certain point
             pass

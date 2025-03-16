@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 import cv2
@@ -61,7 +62,7 @@ class ExperienceManager:
 
             self._list_timed_pair_projectile_coordinates_2d.append(timed_projectile_found_in_pair_of_images)
 
-    def _compute_3d_coords_from_2d_coords_pair  (self, pair_coords_2d: Point2DPair) -> Point3D:
+    def _compute_3d_coords_from_2d_coords_pair(self, pair_coords_2d: Point2DPair) -> Point3D:
         if not _can_be_reconstructed(pair_coords_2d):
             return Point3D()
 
@@ -145,7 +146,9 @@ class ExperienceManager:
         y_position_vector = list_3d_positions[:, 1]
         z_position_vector = list_3d_positions[:, 2]
 
-        list_3d_speeds = np.vstack([timed_speed_3d.get_point() for timed_speed_3d in self._list_timed_projectile_speed_3d])
+        list_3d_speeds = np.vstack(
+            [timed_speed_3d.get_point() for timed_speed_3d in self._list_timed_projectile_speed_3d]
+        )
         x_speed_vector = list_3d_speeds[:, 0]
         y_speed_vector = list_3d_speeds[:, 1]
         z_speed_vector = list_3d_speeds[:, 2]
@@ -175,7 +178,9 @@ class ExperienceManager:
         ax = fig.add_subplot(111)
 
         time_vector = [timed_speed_3d.get_timestamp() for timed_speed_3d in self._list_timed_projectile_speed_3d]
-        speeds_vectors = np.vstack([timed_speed_3d.get_point() for timed_speed_3d in self._list_timed_projectile_speed_3d])
+        speeds_vectors = np.vstack(
+            [timed_speed_3d.get_point() for timed_speed_3d in self._list_timed_projectile_speed_3d]
+        )
         speed_magnitude = speed_magnitudes = np.linalg.norm(speeds_vectors, axis=1)
 
         plt.plot(time_vector, speed_magnitude)
@@ -189,7 +194,8 @@ class ExperienceManager:
         ax = fig.add_subplot(111)
 
         time_vector = [
-            timed_acceleration_3d.get_timestamp() for timed_acceleration_3d in self._list_timed_projectile_acceleration_3d
+            timed_acceleration_3d.get_timestamp()
+            for timed_acceleration_3d in self._list_timed_projectile_acceleration_3d
         ]
         accelerations_vectors = np.vstack(
             [timed_acceleration_3d.get_point() for timed_acceleration_3d in self._list_timed_projectile_acceleration_3d]
@@ -255,9 +261,12 @@ class ExperienceManager:
             "z_acceleration": accelerations_vectors[2, :],
         }
         df = pd.DataFrame(data)
-        file_name = save_to if save_to.endswith(".csv") else save_to + ".csv"
 
-        df.to_csv(file_name, index=False, float_format="%.12f", na_rep="NaN")
+        file_name = save_to if save_to.endswith(".csv") else save_to + ".csv"
+        result_dir = Path(__file__).resolve().parent.parent / "results"
+        result_dir.mkdir(parents=True, exist_ok=True)
+        file_path = result_dir / file_name
+        df.to_csv(file_path, index=False, float_format="%.12f", na_rep="NaN")
 
 
 def _can_be_reconstructed(pair_coords_2d: Point2DPair) -> bool:
