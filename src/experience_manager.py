@@ -38,9 +38,6 @@ class ExperienceManager:
         self.timed_projectile_speed_3d: List[TimedPoint3D] = []
         self.timed_projectile_acceleration_3d: List[TimedPoint3D] = []
 
-    def get_files_manager(self):
-        return self._files_manager
-
     def set_projectile_finder_method(self, projectile_finder_method: AvailableProjectileFindersMethod):
         self._images_pair_processor.set_projectile_finder_method(projectile_finder_method)
 
