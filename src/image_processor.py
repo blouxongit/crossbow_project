@@ -4,11 +4,11 @@ import cv2 as cv
 import numpy as np
 
 from camera import HighSpeedCamera
-from data_types import ImagePair, Pair, Point2D
+from constants import AvailableProjectileFindersMethod
+from data_types import ImagePair, Pair, Point2D, Point2DPair
 from projectile_finder import ProjectileFinders
 from src.camera import CameraSetup
 from src.constants import ColorDomain
-from src.projectile_finder import AvailableProjectileFindersMethod
 
 
 class ImageProcessor:
@@ -62,8 +62,8 @@ class ImagesPairProcessor:
         self._pair_image_processor.right.set_image(image)
 
     def set_camera_pair_images(self, image_pair: ImagePair):
-        self.set_left_camera_image(image_pair.left_image)
-        self.set_right_camera_image(image_pair.right_image)
+        self.set_left_camera_image(image_pair.left)
+        self.set_right_camera_image(image_pair.right)
 
     def set_color_domain_to_find_projectile(self, new_color_domain: ColorDomain):
         self._pair_image_processor.left.color_domain_to_find_projectile = new_color_domain
@@ -82,8 +82,8 @@ class ImagesPairProcessor:
         self._pair_image_processor.left.set_projectile_finder_function(new_projectile_finder_method)
         self._pair_image_processor.right.set_projectile_finder_function(new_projectile_finder_method)
 
-    def find_projectiles_in_images(self, *args, **kwargs) -> List[List[Point2D]]:
-        projectiles_in_left_image = self._pair_image_processor.left.find_projectile(*args, **kwargs)
-        projectiles_in_right_image = self._pair_image_processor.right.find_projectile(*args, **kwargs)
+    def find_projectile_in_images(self, *args, **kwargs) -> Point2DPair:
+        projectile_in_left_image = self._pair_image_processor.left.find_projectile(*args, **kwargs)
+        projectile_in_right_image = self._pair_image_processor.right.find_projectile(*args, **kwargs)
 
-        return [projectiles_in_left_image, projectiles_in_right_image]
+        return Point2DPair(projectile_in_left_image, projectile_in_right_image)

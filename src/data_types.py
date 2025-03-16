@@ -1,13 +1,12 @@
 import numpy as np
 
+import files_manager
+
 
 class Point2D:
-    def __init__(self, x=None, y=None):
+    def __init__(self, x=np.nan, y=np.nan):
         self.x = x
         self.y = y
-
-    def __eq__(self, other):
-        return self.get_point() == other.get_point()
 
     def set_x(self, x):
         self.x = x
@@ -16,25 +15,41 @@ class Point2D:
         self.y = y
 
     def get_point(self):
-        return np.array([self.x, self.y]).transpose()
+        return np.array([self.x, self.y])
+
+    def __eq__(self, other):
+        if not isinstance(other, Point2D):
+            return False
+        return np.allclose(self.get_point(), other.get_point(), equal_nan=True)
+
+    def is_default(self):
+        return np.isnan(self.x) and np.isnan(self.y)
+
+    def is_valid(self):
+        return not (np.isnan(self.x) or np.isnan(self.y))
 
 
 class Point3D(Point2D):
-    def __init__(self, x=None, y=None, z=None):
+    def __init__(self, x=np.nan, y=np.nan, z=np.nan):
         super().__init__(x, y)
         self.z = z
 
     def __eq__(self, other):
-        return self.get_point() == other.get_point()
+        if not isinstance(other, Point3D):
+            return False
+        return np.allclose(self.get_point(), other.get_point(), equal_nan=True)
 
     def set_z(self, z):
         self.z = z
 
     def get_point(self):
-        return np.array([self.x, self.y, self.z]).transpose()
+        return np.array([self.x, self.y, self.z])
 
     def is_default(self):
-        return self == Point3D()
+        return np.isnan(self.z) and super().is_default()
+
+    def is_valid(self):
+        return (not np.isnan(self.z)) and super().is_valid()
 
 
 class Pair:
@@ -49,18 +64,14 @@ class Pair:
         return np.array([self.left, self.right])
 
 
-class ImagePair:
+class ImagePair(Pair):
     def __init__(self, left_image: np.ndarray, right_image: np.ndarray):
-        self.left_image = left_image
-        self.right_image = right_image
-
-    def get_pair(self):
-        return Pair(self.left_image, self.right_image)
+        super().__init__(left_image, right_image)
 
 
-class Point2DPair:
+class Point2DPair(Pair):
     def __init__(self, left_point: Point2D, right_point: Point2D):
-        self.pair = Pair(left_point, right_point)
+        super().__init__(left_point, right_point)
 
 
 class TimedData:
@@ -112,6 +123,12 @@ class TimedPoint3D(TimedData):
         return self.timestamp, self.data.get_point()
 
 
+class TimedPathPair(TimedData):
+    def __init__(self, timestamp, left_path: str, right_path: str):
+        path_pair = Pair(left_path, right_path)
+        super().__init__(timestamp, path_pair)
+
+
 class TimedImage(TimedData):
     def __init__(self, timestamp, image: np.ndarray):
         super().__init__(timestamp, image)
@@ -119,8 +136,15 @@ class TimedImage(TimedData):
 
 class TimedImagePair(TimedData):
     def __init__(self, timestamp, left_image: np.ndarray, right_image: np.ndarray):
-        images_pair = Pair(left_image, right_image)
-        super.__init__(timestamp, images_pair)
+        images_pair = ImagePair(left_image, right_image)
+        super().__init__(timestamp, images_pair)
+
+    @classmethod
+    def from_timed_path_pair(cls, timed_path_pair: TimedPathPair):
+        timestamp, path_pair = timed_path_pair.get()
+        left_image = files_manager.read_image(path_pair.left)
+        right_image = files_manager.read_image(path_pair.right)
+        return cls(timestamp, left_image, right_image)
 
 
 class TimedPoint2DPair(TimedData):

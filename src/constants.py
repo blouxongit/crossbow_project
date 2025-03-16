@@ -1,6 +1,12 @@
 from enum import Enum
 
 
+# This is the enumeration to be modified in case you want to add your own method.
+class AvailableProjectileFindersMethod(Enum):
+    FIND_CIRCLES = 1
+    DUMMY_METHOD_EXAMPLE = 99
+
+
 class CameraIdentifier(Enum):
     LEFT_CAMERA = 0
     RIGHT_CAMERA = 1
@@ -15,7 +21,7 @@ class ColorDomain(Enum):
 ALLOWED_IMAGE_FORMATS = [".jpg", ".png", ".jpeg", ".tif"]
 
 
-VALID_JSON_SCHEMA = {
+VALID_CONFIGURATION_JSON_SCHEMA = {
     "type": "object",
     "properties": {"leftCamera": {"$ref": "#/definitions/camera"}, "rightCamera": {"$ref": "#/definitions/camera"}},
     "required": ["leftCamera", "rightCamera"],

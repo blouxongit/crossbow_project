@@ -5,7 +5,7 @@ import numpy as np
 from jsonschema import ValidationError, validate
 from scipy.spatial.transform import Rotation as Rot
 
-from constants import VALID_JSON_SCHEMA
+from constants import VALID_CONFIGURATION_JSON_SCHEMA
 from src.constants import CameraIdentifier
 
 
@@ -63,7 +63,7 @@ class Config:
         framerate = config_camera["framerate"]
         images_folder_path = config_camera["imagesFolderPath"]
 
-        rotation = Rot.from_euler("xyz", [yaw, pitch, roll], degrees=True)
+        rotation = Rot.from_euler("xyz", [yaw, pitch, roll], degrees=True).as_matrix()
 
         intrinsic_matrix = self._get_intrinsic_matrix_from_params(focal_x, focal_y, skew, ppx, ppy)
         extrinsinc_matrix = self._get_extrinsic_matrix_from_params(rotation, position)
@@ -78,7 +78,7 @@ class Config:
 
     def is_valid(self):
         try:
-            validate(self._config, VALID_JSON_SCHEMA)
+            validate(self._config, VALID_CONFIGURATION_JSON_SCHEMA)
         except ValidationError:
             return False
 
