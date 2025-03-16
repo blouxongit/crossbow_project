@@ -11,7 +11,7 @@ from src.constants import CameraIdentifier
 
 class Config:
     def __init__(self, config_path):
-        self._config = None
+        self._config_as_map = None
         self._read_config_file(config_path)
 
         assert self.is_valid(), "The configuration file given is incorrect."
@@ -50,7 +50,7 @@ class Config:
         else:
             camera_key = "rightCamera"
 
-        config_camera = self._config[camera_key]
+        config_camera = self._config_as_map[camera_key]
         focal_x = config_camera["focalX"]
         focal_y = config_camera["focalY"]
         skew = config_camera["skew"]
@@ -74,15 +74,12 @@ class Config:
         file_path = Path(config_path)
         if file_path.exists() and file_path.is_file():
             with open(file_path, "r") as f:
-                self._config = json.load(f)
+                self._config_as_map = json.load(f)
 
     def is_valid(self):
         try:
-            validate(self._config, VALID_CONFIGURATION_JSON_SCHEMA)
+            validate(self._config_as_map, VALID_CONFIGURATION_JSON_SCHEMA)
         except ValidationError:
             return False
 
         return True
-
-    def get_config(self):
-        return self._config

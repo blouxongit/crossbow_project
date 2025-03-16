@@ -1,6 +1,6 @@
 import cv2 as cv
 
-from constants import AvailableProjectileFindersMethod
+from constants import AvailableProjectileFinderMethods
 from data_types import Point2D
 
 # If you wish to add another function to find the projectiles you need to :
@@ -12,11 +12,11 @@ class ProjectileFinders:
     def __init__(self):
         # This is the function mapping to be updated if you wish to add another projectile finder function
         self._finder_function_mapping = {
-            AvailableProjectileFindersMethod.FIND_CIRCLES: find_circles_in_image_coordinates,
-            AvailableProjectileFindersMethod.DUMMY_METHOD_EXAMPLE: dummy_example,
+            AvailableProjectileFinderMethods.FIND_CIRCLES: find_circles_in_image_coordinates,
+            AvailableProjectileFinderMethods.DUMMY_METHOD_EXAMPLE: dummy_example,
         }
 
-    def get_projectile_finder_function(self, finder_function: AvailableProjectileFindersMethod):
+    def get_projectile_finder_function(self, finder_function: AvailableProjectileFinderMethods):
         assert (
             finder_function in self._finder_function_mapping
         ), "The function you are looking for seems to be not implemented yet."

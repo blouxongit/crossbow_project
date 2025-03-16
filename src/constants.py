@@ -2,7 +2,7 @@ from enum import Enum
 
 
 # This is the enumeration to be modified in case you want to add your own method.
-class AvailableProjectileFindersMethod(Enum):
+class AvailableProjectileFinderMethods(Enum):
     FIND_CIRCLES = 1
     DUMMY_METHOD_EXAMPLE = 99
 

@@ -21,7 +21,7 @@ class FilesManager:
         self.set_directory_images_left_camera(config.left_camera_config.directory_path)
         self.set_directory_images_right_camera(config.right_camera_config.directory_path)
         if self.is_valid():
-            self.create_list_timed_matching_image_pair()
+            self.create_list_timed_matching_image_path_pair()
 
     def set_directory_images_left_camera(self, directory: Union[str, Path]):
         if isinstance(directory, str):
@@ -43,8 +43,7 @@ class FilesManager:
                 images_paths += list(self._directory_images_right_camera.glob(f"*{extension}"))
         return [str(image_path) for image_path in images_paths]
 
-    def create_list_timed_matching_image_pair(self, starting_point=None):
-        list_timed_images_pair = []
+    def create_list_timed_matching_image_path_pair(self, starting_point=None):
 
         if starting_point:
             # TODO : we should do something in case we want to process images after a certain point
