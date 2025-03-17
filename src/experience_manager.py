@@ -48,12 +48,12 @@ class ExperienceManager:
     def _assign_images(self, matching_image_pair: ImagePair):
         self._image_pair_processor.set_image_pair_to_camera_pair(matching_image_pair)
 
-    def _extract_projectile_2d_coordinates(self):
+    def extract_projectile_2d_coordinates_in_image_pairs(self, *args, **kwargs):
         for timed_matching_image_path_pair in self._files_manager.list_timed_matching_image_path_pair:
             timed_matching_image_pair = TimedImagePair.from_timed_path_pair(timed_matching_image_path_pair)
             self._assign_images(matching_image_pair=timed_matching_image_pair.get_data())
 
-            projectile_found_in_pair_of_images = self._image_pair_processor.find_projectile_in_images()
+            projectile_found_in_pair_of_images = self._image_pair_processor.find_projectile_in_images(*args, **kwargs)
             timed_projectile_found_in_pair_of_images = TimedPoint2DPair(
                 timed_matching_image_pair.get_timestamp(),
                 projectile_found_in_pair_of_images.left,
@@ -77,7 +77,9 @@ class ExperienceManager:
         )
 
     def compute_trajectory(self):
-        self._extract_projectile_2d_coordinates()
+        assert (
+            self._list_timed_pair_projectile_coordinates_2d
+        ), "The 2D projectile coordinates in the images were not extracted yet. You may use the extract_projectile_2d_coordinates_in_image_pairs() function before calling compute_trajectory()"
 
         for projectile_coords_pair_2d in self._list_timed_pair_projectile_coordinates_2d:
             projectile_3d_coords = self._compute_3d_coords_from_2d_coords_pair(projectile_coords_pair_2d.get_data())
@@ -115,7 +117,8 @@ class ExperienceManager:
             )
             self._list_timed_projectile_acceleration_3d.append(timed_acceleration_point)
 
-    def compute_kinematics(self):
+    def compute_kinematics(self, *args, **kwargs):
+        self.extract_projectile_2d_coordinates_in_image_pairs(*args, **kwargs)
         self.compute_trajectory()
         self.compute_speed()
         self.compute_acceleration()
