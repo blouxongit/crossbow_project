@@ -7,8 +7,7 @@ As of today (March 2025), we remind that the aim of this tool is to extract the 
 ## Simplified class diagram
 
 The overall (simplified) architecture of this project is visible hereafter:
-![General simplified architecture of the crossbow project](./images/class_diagram.svg?sanitize=true)
-<img src="./images/class_diagram.svg">
+![General simplified architecture of the crossbow project](./images/class_diagram.svg)
 
 ## The configuration file
 
