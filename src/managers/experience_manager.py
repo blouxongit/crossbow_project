@@ -25,10 +25,6 @@ class ExperienceManager:
         self._image_pair_processor = ImagePairProcessor()
         self._image_pair_processor.set_camera_setup(self._camera_setup)
 
-        # By default, we use opencv findCircles method, that find circles in grayscale images
-        self._image_pair_processor.set_projectile_finder_method(AvailableProjectileFinderMethods.FIND_CIRCLES)
-        self._image_pair_processor.set_color_domain_to_find_projectile(ColorDomain.GRAYSCALE)
-
         self._files_manager = FilesManager()
         self._files_manager.update_from_config(config=self._configuration)
 
