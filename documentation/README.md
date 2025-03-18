@@ -29,7 +29,7 @@ The camera reference system is an orthogonal direct frame, as shown below :
 ![camera_reference_system](./images/camera_frame.png)  
 
 Regarding the world reference system, it is up to you to decide it. The choice of this system should be mentionned in your experience plan.
-> Usually, this system is chosen to be one of the camera's reference system. Therefore, only 6 measurements needs to be done (3 translations, 3 rotations corresponding to 1 camera) instead of 12 (same for 2 cameras).
+> Usually, this system is chosen to be one of the camera's reference system. Therefore, only 6 measurements needs to be done (3 translations, 3 rotations corresponding to 1 camera) instead of 12 (3 rotations, 3 translations per camera).
 
 ### The Config
 
@@ -68,8 +68,8 @@ It simply contains two instances of `HighSpeedCameras`
 
 ## The DataTypes
 
-Before going further into this documention, it appears wise to explain the different data types used. I will be honest here, even I get confused sometimes regarding the architecture of the different data types.  
-The said architecture is shown below :
+Before going further into this documentation, it appears wise to explain the different data types used. I will be honest here, even I get confused sometimes regarding the architecture of the different data types. The data types are stored in [./src/data_types/data_types.py](../src/data_types/data_types.py).  
+That said, the architecture is shown below :
 
 ![Data types](./images/data_types.svg)
 
@@ -107,5 +107,129 @@ Of course, now that we set our data types, we can combine them to make more usef
 At this point, I am pretty sure the code is ugly and could be optimized and much prettier. However, this works like that and we are not yet at the point where we have types that we lose track of some.
 
 
+## The ProjectileFinder
+
+This [class](../src/image_processing/projectile_finder.py) is absolutely **CRUCIAL** in the code. This class is responsible for providing the methods of detection in the images. The aim of this class is to be able to be easily expanded. That is, you should be able to add your own detection methods easily wihtout having to spend too much time on how is the code working elsewhere.  
+The class itself is very small: 1 attribute and 1 method. 
+
+Let's start with the attribute:
+
+`_finder_function_mapping`: this is a map that whose keys are an enumeration `AvailableProjectileFinderMethods` and variables are callable (=functions).  
+This attribute simply stores the existing functions to find targets, and associate them with a key stored in an enumeration.
 
 
+Now the method: 
+
+`get_projectile_finder_function`: this function take as parameters a `AvailableProjectileFinderMethods`, and simply returns the function that corresponds to the key you are asking.
+
+That's it, as simple as that.
+
+
+### How to add my own detection method ?
+
+As said above, the objective of this class is to be easily expandable. You may add your own method using the following protocol:
+
+1. Write the method. The only restriction is that your method **MUST** return a `Point2D` object.
+2. Add an enumeration key to your method. The key name should represent your method, and be added to the `AvailableProjectileFinderMethods` enumeration, in the [./src/constants.py](../src/constants.py) file.
+3. Add the mapping to the `_finder_function_mapping` attribute of the [ProjectileFinder](../src/image_processing/projectile_finder.py) class.
+
+Well done, your function may not be used! We will explain how to call it in the nexts sections.
+
+## The ImageProcessor
+
+This [class](../src/image_processing/image_processor.py) aims at performing image processing on single images. Honestly it is not a very expensive class and is fairly easy to understand. It was created as it is the only class that will actually use the images. When performing image processing, it should only be done through an instance of this class (images are expensive in memory, and we should not deal with too many images at once). 
+
+Of course, this class is extended into a ImagePairProcessor class, whose only purpose is to manipulate more easily the code, and not lose track of everything when developing new functionalities.
+
+Long story short, this class is the numerical representation of an image that was taken. It keeps track of its camera, and it can perform processing actions on itself. Cool.
+
+## The ExperienceManager
+
+You probably already guessed it by the name of this [class](../src/managers/experience_manager.py), this is the backbone of this tool. Indeed, the ExperienceManager class manages all of the above classes and is responsible for producing the final kinematics of the projectile.  
+As a result, this class possesses many attributes that are classes defined below:
+
+### The attributes
+
+- `_configuration`: a Config instance
+- `_camera_setup`: a CameraSetup instance
+- `_image_pair_processor`: an ImagePairProcessor instance
+- `_files_manager`: a FilesManager instance
+
+By this point, you should know what each of these instance is responsible for. In addition to that, the ExperienceManager also possesses the following attributes:
+
+- `_list_timed_pair_projectile_coordinates_2d`: This is list. Each element of this list is a TimedPoint2DPair. It corresponds to the coordinates of the projectile that was found in a pair of images.
+- `_list_timed_projectile_coordinates_3d`: This is list. Each element of this list is a TimedPoint3D. It corresponds to the reconstruction of the 3D point of the projectile, from the pair of 2D points.
+- `_list_timed_projectile_speed_3d`: This is list. Each element of this list is a TimedPoint3D. It corresponds to the 3D speed of the projectile. It uses the position to compute the classical discrete time derivative. It has N-1 elements than the positions
+- `_list_timed_projectile_acceleration_3d`: This is list. Each element of this list is a TimedPoint3D. It corresponds to the 3D acceleration of the projectile. It uses the speed to compute the classical discrete time derivative. It has N-2 elements than the positions
+
+Now that we have an overview of the different attributes of the ExperienceManager, we will take a look at its methods.
+
+### The methods
+
+For this experience manager, we provide several methods. For the inexperienced user, only public methods should be used. We describe them below.
+
+#### The public methods
+
+Those methods are the one that are accessible when instanciating an ExperienceManager. They are the ones you are likely to use.
+  
+##### The `set_projectile_finder_method` method:
+
+This method let the user chose the finding method to detect a projectile in the image.  
+It takes an `AvailableProjectileFinderMethods` as argument.
+
+##### The `set_color_domain_to_find_projectile` method:
+
+This method let the user chose the color domain the projectile should be found in. Some image processing methods work in grayscale, some in color. This function should be called in accordance with the detecting function you have chosen. The color domain the function uses should be referenced in this document, in the [ProjectileFinder section](#the-projectilefinder).  
+It takes a `ColorDomain` object as argument.
+
+##### The `extract_projectile_2d_coordinates_in_image_pairs` method:
+
+This method will find the projectiles in all the images picked by the `_files_manager`. This function constructs the `_list_timed_pair_projectile_coordinates_2d` attribute.  
+It can take as many arguments or keyword arguments as desired. That means that your own projectile finder method can also have as many inputs as wanted, and be passed to this function.
+**Warning** : For this function to work, you must first have called `set_projectile_finder_method` and `set_color_domain_to_find_projectile`.
+
+##### The `compute_trajectory` method:
+
+This is self-explanatory, this function constructs the `_list_timed_projectile_coordinates_3d` attribute.   
+**Warning** : For this function to work, you must first have called `extract_projectile_2d_coordinates_in_image_pairs`.
+
+##### The `compute_speed` method:
+
+This is self-explanatory, this function constructs the `__list_timed_projectile_speed_3d`.   
+**Warning** : For this function to work, you must first have called `compute_trajectory`.
+
+##### The `compute_acceleration` method:
+
+This is self-explanatory, this function constructs the `__list_timed_projectile_acceleration_3d`.   
+**Warning** : For this function to work, you must first have called `compute_speed`.
+
+
+##### The `compute_kinematics` method:
+
+This method allows to compute all of the above at once! This is likely the function you will always use.  
+It can take as many arguments or keyword arguments as desired. That means that your own projectile finder method can also have as many inputs as wanted, and be passed to this function. 
+**Warning** : For this function to work, you must first have called `set_projectile_finder_method` and `set_color_domain_to_find_projectile`.
+
+
+##### The `plot_trajectory` method:
+Self-explanatory.
+**Warning** : For this function to work, you must first have called `compute_trajectory`.
+
+
+##### The `plot_speed_vector` method:
+Self-explanatory.
+**Warning** : For this function to work, you must first have called `compute_speed`.
+
+
+##### The `plot_speed_magnitude` method:
+Self-explanatory.
+**Warning** : For this function to work, you must first have called `compute_speed`.
+
+##### The `plot_acceleration_magnitude` method:
+Self-explanatory.
+**Warning** : For this function to work, you must first have called `compute_acceleration`.
+
+
+##### The `save_results_as_csv` method:
+This function saves all the kinematics results (time, position, speed, acceleration) in a CSV file. This file can then be used to do some further analysis (any software can read this format, Excel for instance).  
+It may take as argument (not necessary) a file name to be saved to. This file will then be saved in a `result` folder, at the root of the repository. By default, the file will be named `results.csv`
