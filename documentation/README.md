@@ -31,6 +31,13 @@ The camera reference system is an orthogonal direct frame, as shown below :
 Regarding the world reference system, it is up to you to decide it. The choice of this system should be mentionned in your experience plan.
 > Usually, this system is chosen to be one of the camera's reference system. Therefore, only 6 measurements needs to be done (3 translations, 3 rotations corresponding to 1 camera) instead of 12 (3 rotations, 3 translations per camera).
 
+To clarify what we are trying to extract, we must be able to retrieve both the camera's reference system with respect to the world coordinates system, as shown in the image below.
+
+![different coordinates system](./images/different_frames.png)  
+
+In this case, the choice for the world coordinate system is poorly made, but this experimental plan would be absolutely valid ! As long as you have made the correct measurements, any world coordinates system is fine
+
+
 ### The Config
 
 The reader of the configuration file is a simple JSON reader. It is located at [./src/configuration_reader.py](../src/configuration_reader.py).
@@ -43,6 +50,7 @@ The Config class created with the configuration file is then used to create/upda
 - The CameraSetup
 - The ExperienceManager
 
+---
 
 ## The FilesManager
 
@@ -61,10 +69,14 @@ When I asked about the high speed cameras used at the school, it appears there i
 The function we use is `create_list_timed_matching_image_path_pair`. It itself calls `find_closest_image_path_to_form_pair`.  
 Because we are lucky to have this setup (synchronization), the last function is trivial. Otherwise, this is the function that would require a bit of logic to form the appropriate pairs of images.
 
+---
+
 ## The CameraSetup
 
 This class is used to store the information on the cameras. It is used to store the intrinsic and extrinsic matrix of both cameras. The product of those matrix is called the projection matrix. The projection matrix is the one that will be used afterwards to compute the 3D points from a pair of 2D points.  
 It simply contains two instances of `HighSpeedCameras`
+
+---
 
 ## The DataTypes
 
@@ -106,6 +118,18 @@ Of course, now that we set our data types, we can combine them to make more usef
 
 At this point, I am pretty sure the code is ugly and could be optimized and much prettier. However, this works like that and we are not yet at the point where we have types that we lose track of some.
 
+---
+
+## The enumerations
+
+Few but important, here are the enumerations used in this project. As of right now, they are stored in [./src/constants.py](../src/constants.py) (which come to think of it, is not really consistent with the name of the file, but whatever).
+They are visible in this diagram:
+
+![Constants](./images/enums.svg)
+
+Their purpose will reveal to you if you keep reading this...
+
+---
 
 ## The ProjectileFinder
 
@@ -135,6 +159,8 @@ As said above, the objective of this class is to be easily expandable. You may a
 
 Well done, your function may not be used! We will explain how to call it in the nexts sections.
 
+---
+
 ## The ImageProcessor
 
 This [class](../src/image_processing/image_processor.py) aims at performing image processing on single images. Honestly it is not a very expensive class and is fairly easy to understand. It was created as it is the only class that will actually use the images. When performing image processing, it should only be done through an instance of this class (images are expensive in memory, and we should not deal with too many images at once). 
@@ -142,6 +168,8 @@ This [class](../src/image_processing/image_processor.py) aims at performing imag
 Of course, this class is extended into a ImagePairProcessor class, whose only purpose is to manipulate more easily the code, and not lose track of everything when developing new functionalities.
 
 Long story short, this class is the numerical representation of an image that was taken. It keeps track of its camera, and it can perform processing actions on itself. Cool.
+
+---
 
 ## The ExperienceManager
 
@@ -164,72 +192,138 @@ By this point, you should know what each of these instance is responsible for. I
 
 Now that we have an overview of the different attributes of the ExperienceManager, we will take a look at its methods.
 
-### The methods
+### Methods
 
-For this experience manager, we provide several methods. For the inexperienced user, only public methods should be used. We describe them below.
+The **Experience Manager** provides several methods. For an inexperienced user, only public methods should be used. These methods are described below. The private methods are considered to be named well-enough to be understood for someone that would like to apply changes to the code. (sorry)
 
-#### The public methods
+#### Public Methods
 
-Those methods are the one that are accessible when instanciating an ExperienceManager. They are the ones you are likely to use.
-  
-##### The `set_projectile_finder_method` method:
+These methods are accessible when instantiating an `ExperienceManager` and are the ones you are most likely to use.
 
-This method let the user chose the finding method to detect a projectile in the image.  
-It takes an `AvailableProjectileFinderMethods` as argument.
+---
 
-##### The `set_color_domain_to_find_projectile` method:
+#### `set_projectile_finder_method(method: AvailableProjectileFinderMethods)`
 
-This method let the user chose the color domain the projectile should be found in. Some image processing methods work in grayscale, some in color. This function should be called in accordance with the detecting function you have chosen. The color domain the function uses should be referenced in this document, in the [ProjectileFinder section](#the-projectilefinder).  
-It takes a `ColorDomain` object as argument.
+Sets the method used to detect a projectile in the image.  
 
-##### The `extract_projectile_2d_coordinates_in_image_pairs` method:
+- **Parameter:**  
+  - `method` (`AvailableProjectileFinderMethods`): The chosen projectile detection method.
 
-This method will find the projectiles in all the images picked by the `_files_manager`. This function constructs the `_list_timed_pair_projectile_coordinates_2d` attribute.  
-It can take as many arguments or keyword arguments as desired. That means that your own projectile finder method can also have as many inputs as wanted, and be passed to this function.
-**Warning** : For this function to work, you must first have called `set_projectile_finder_method` and `set_color_domain_to_find_projectile`.
+---
 
-##### The `compute_trajectory` method:
+#### `set_color_domain_to_find_projectile(domain: ColorDomain)`
 
-This is self-explanatory, this function constructs the `_list_timed_projectile_coordinates_3d` attribute.   
-**Warning** : For this function to work, you must first have called `extract_projectile_2d_coordinates_in_image_pairs`.
+Sets the color domain in which the projectile will be detected. Some image processing methods work in grayscale, while others work in color.  
+Ensure this function is called in accordance with the detection function you have chosen.  
+The required color domain should be referenced in the [ProjectileFinder section](#the-projectilefinder).
 
-##### The `compute_speed` method:
+- **Parameter:**  
+  - `domain` (`ColorDomain`): The chosen color domain.
 
-This is self-explanatory, this function constructs the `__list_timed_projectile_speed_3d`.   
-**Warning** : For this function to work, you must first have called `compute_trajectory`.
+---
 
-##### The `compute_acceleration` method:
+#### `extract_projectile_2d_coordinates_in_image_pairs(*args, **kwargs)`
 
-This is self-explanatory, this function constructs the `__list_timed_projectile_acceleration_3d`.   
-**Warning** : For this function to work, you must first have called `compute_speed`.
+Finds the projectiles in all images selected by `_files_manager` and constructs the `_list_timed_pair_projectile_coordinates_2d` attribute.  
 
+- Accepts any number of positional (`*args`) and keyword (`**kwargs`) arguments, allowing custom projectile finder methods with multiple inputs.  
 
-##### The `compute_kinematics` method:
+> **Warning:** Before using this function, you must first call:
+> - `set_projectile_finder_method`
+> - `set_color_domain_to_find_projectile`
 
-This method allows to compute all of the above at once! This is likely the function you will always use.  
-It can take as many arguments or keyword arguments as desired. That means that your own projectile finder method can also have as many inputs as wanted, and be passed to this function. 
-**Warning** : For this function to work, you must first have called `set_projectile_finder_method` and `set_color_domain_to_find_projectile`.
+---
 
+#### `compute_trajectory()`
 
-##### The `plot_trajectory` method:
-Self-explanatory.
-**Warning** : For this function to work, you must first have called `compute_trajectory`.
+Computes the projectile's **3D trajectory** and constructs the `_list_timed_projectile_coordinates_3d` attribute.  
 
+> **Warning:** Before using this function, you must first call `extract_projectile_2d_coordinates_in_image_pairs`.
 
-##### The `plot_speed_vector` method:
-Self-explanatory.  
-**Warning** : For this function to work, you must first have called `compute_speed`.
+---
 
+#### `compute_speed()`
 
-##### The `plot_speed_magnitude` method:
-Self-explanatory.  
-**Warning** : For this function to work, you must first have called `compute_speed`.
+Computes the projectile's **speed** and constructs the `__list_timed_projectile_speed_3d` attribute.  
 
-##### The `plot_acceleration_magnitude` method:
-Self-explanatory.  
-**Warning** : For this function to work, you must first have called `compute_acceleration`.
+> **Warning:** Before using this function, you must first call `compute_trajectory`.
 
+---
 
-##### The `save_results_as_csv` method:
-This function saves all the kinematics results (time, position, speed, acceleration) in a CSV file. This file can then be used to do some further analysis (any software can read this format, Excel for instance).  
-It may take as argument (not necessary) a file name to be saved to. This file will then be saved in a `result` folder, at the root of the repository. By default, the file will be named `results.csv`
+#### `compute_acceleration()`
+
+Computes the projectile's **acceleration** and constructs the `__list_timed_projectile_acceleration_3d` attribute.  
+
+> **Warning:** Before using this function, you must first call `compute_speed`.
+
+---
+
+#### `compute_kinematics(*args, **kwargs)`
+
+Computes **all kinematic properties** (trajectory, speed, and acceleration) in one step.  
+This is likely the function you will use most frequently.
+
+- Accepts any number of positional (`*args`) and keyword (`**kwargs`) arguments, allowing custom projectile finder methods with multiple inputs.  
+
+> **Warning:** Before using this function, you must first call:
+> - `set_projectile_finder_method`
+> - `set_color_domain_to_find_projectile`
+
+---
+
+#### `plot_trajectory()`
+
+Plots the **projectile’s trajectory**.  
+
+> **Warning:** Before using this function, you must first call `compute_trajectory`.
+
+---
+
+#### `plot_speed_vector()`
+
+Plots the **speed vector** of the projectile.  
+
+> **Warning:** Before using this function, you must first call `compute_speed`.
+
+---
+
+#### `plot_speed_magnitude()`
+
+Plots the **magnitude of the speed** over time.  
+
+> **Warning:** Before using this function, you must first call `compute_speed`.
+
+---
+
+#### `plot_acceleration_magnitude()`
+
+Plots the **magnitude of the acceleration** over time.  
+
+> **Warning:** Before using this function, you must first call `compute_acceleration`.
+
+---
+
+#### `save_results_as_csv(filename: str = "results.csv")`
+
+Saves all kinematic results (**time, position, speed, acceleration**) in a CSV file for further analysis (e.g., with Excel).  
+
+- **Optional Parameter:**  
+  - `filename` (`str`, default: `"results.csv"`): Custom name for the CSV file.  
+
+The file is saved in the `result` folder at the root of the repository.
+
+---
+
+## To help you: the [run_experience.py](../src/run_experience.py) file !
+
+Well done for reading through this documentation !  
+As a reward, we provide with this code a file that lets you play around. This is the file that will be run when following the run instructions of the [main README.md](../README.md).  
+Feel free to test the (few but working!) possibilities provided by the experience manager :)
+
+---
+
+## Note for the end:
+
+First of all, thank you for reading up until now (if you just scrolled to this, I do not blame you). I hope this project will turn useful in the future.  
+In case you have questions, you can contact me on my school email: erwan.toux@student.isae-supaero.fr. I will mostlikely not provide extensive assistance, but I would be glad to help and see this project go on !
+Please keep in mind that this work was done for a student project, and I tried my best to make it easy to onboard/improve/use.
