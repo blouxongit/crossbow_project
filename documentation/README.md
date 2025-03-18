@@ -7,7 +7,8 @@ As of today (March 2025), we remind that the aim of this tool is to extract the 
 ## Simplified class diagram
 
 The overall (simplified) architecture of this project is visible hereafter:
-![General simplified architecture of the crossbow project](./images/class_diagram.svg)
+![General simplified architecture of the crossbow project](./images/class_diagram.svg?sanitize=true)
+<img src="./images/class_diagram.svg">
 
 ## The configuration file
 
@@ -217,16 +218,16 @@ Self-explanatory.
 
 
 ##### The `plot_speed_vector` method:
-Self-explanatory.
+Self-explanatory.  
 **Warning** : For this function to work, you must first have called `compute_speed`.
 
 
 ##### The `plot_speed_magnitude` method:
-Self-explanatory.
+Self-explanatory.  
 **Warning** : For this function to work, you must first have called `compute_speed`.
 
 ##### The `plot_acceleration_magnitude` method:
-Self-explanatory.
+Self-explanatory.  
 **Warning** : For this function to work, you must first have called `compute_acceleration`.
 
 
