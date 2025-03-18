@@ -10,8 +10,12 @@ The results of the analysis can be visualized and saved.
 ## Installation
 
 The project was entirely developped and tested in Linux, and the tutorial will only be for this OS.  
-First install the required packages using the package manager [pip](https://pip.pypa.io/en/stable/).  
-> It is adivsed (but not mandatory) to create a venv
+First, download the project.
+```bash
+git clone https://github.com/blouxongit/crossbow_project.git
+```
+Then install the required packages using the package manager [pip](https://pip.pypa.io/en/stable/).  
+> It is advised (but not mandatory) to create a venv
 ```bash
 pip install -r requirements.txt
 ```
