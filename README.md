@@ -21,8 +21,8 @@ pip install -r requirements.txt
 ### A. Tuning the file for your needs
 
 The usage can be tuned for your specific experiment. To do so, you may modify the [run_experience.py](src/run_experience.py) file. At the end of this section will be attached the default file (as a backup).  A list of the available methods will be provided in the [documentation](documentation/README.md).  
-To run, the program needs a JSON configuration file. This file is a description of your experimental setup. An example is provided [here](utils/configuration_example.json). 
-
+To run, the program needs a JSON configuration file. This file is a description of your experimental setup. An example is provided [here](utils/configuration_example.json).  
+The creation of this file for your own needs is provided in the [documentation](./documentation/README.md#the-configuration-file).
 ### B. Running the program
 
 Once you are ready to run the program, you may perform the following steps:  

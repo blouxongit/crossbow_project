@@ -6,8 +6,8 @@ import numpy as np
 
 from configuration_reader import Config
 from constants import ALLOWED_IMAGE_FORMATS
+from data_types.data_types import TimedPathPair
 from src.constants import CameraIdentifier
-from src.data_types import TimedPathPair
 
 
 class FilesManager:
@@ -58,7 +58,7 @@ class FilesManager:
         timestamp = 0
         for i in range(maximum_number_of_pairs):
             image_left_camera_path = list_images_left_camera_path[i]
-            closest_image_right_camera_path = find_closest_image_path(
+            closest_image_right_camera_path = find_closest_image_path_to_form_pair(
                 image_left_camera_path, list_images_right_camera_path, i
             )
 
@@ -74,7 +74,7 @@ class FilesManager:
         return self._directory_images_left_camera.is_dir() and self._directory_images_right_camera.is_dir()
 
 
-def find_closest_image_path(current_image_name: str, list_image_to_compare, current_image_idx=None) -> str:
+def find_closest_image_path_to_form_pair(current_image_name: str, list_image_to_compare, current_image_idx=None) -> str:
     # TODO: find how to return the closest image to the timestamp.
     return list_image_to_compare[current_image_idx]
 

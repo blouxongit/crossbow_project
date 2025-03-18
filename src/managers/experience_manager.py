@@ -6,13 +6,13 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-from camera import CameraSetup
 from configuration_reader import Config
 from constants import AvailableProjectileFinderMethods
-from files_manager import FilesManager
-from image_processor import ImagePairProcessor
+from data_types.data_types import ImagePair, Point2DPair, Point3D, TimedImagePair, TimedPoint2DPair, TimedPoint3D
+from image_processing.camera import CameraSetup
+from image_processing.image_processor import ImagePairProcessor
+from managers.files_manager import FilesManager
 from src.constants import ColorDomain
-from src.data_types import ImagePair, Point2DPair, Point3D, TimedImagePair, TimedPoint2DPair, TimedPoint3D
 
 
 class ExperienceManager:
@@ -77,10 +77,10 @@ class ExperienceManager:
         )
 
     def compute_trajectory(self):
-        assert (
-            self._list_timed_pair_projectile_coordinates_2d
-        ), ("The 2D projectile coordinates in the images were not extracted yet. You may use the extract_projectile_2d_coordinates_in_image_pairs() function before calling compute_trajectory(). \n"
-            "If you did call extract_projectile_2d_coordinates_in_image_pairs() before, it means it did not find any target in the images provided.")
+        assert self._list_timed_pair_projectile_coordinates_2d, (
+            "The 2D projectile coordinates in the images were not extracted yet. You may use the extract_projectile_2d_coordinates_in_image_pairs() function before calling compute_trajectory(). \n"
+            "If you did call extract_projectile_2d_coordinates_in_image_pairs() before, it means it did not find any target in the images provided."
+        )
 
         for projectile_coords_pair_2d in self._list_timed_pair_projectile_coordinates_2d:
             projectile_3d_coords = self._compute_3d_coords_from_2d_coords_pair(projectile_coords_pair_2d.get_data())

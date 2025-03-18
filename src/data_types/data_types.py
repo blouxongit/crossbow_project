@@ -1,6 +1,6 @@
 import numpy as np
 
-import files_manager
+from managers import files_manager
 
 
 class Point2D:

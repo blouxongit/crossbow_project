@@ -1,6 +1,6 @@
 from constants import AvailableProjectileFinderMethods
+from managers.experience_manager import ExperienceManager
 from src.constants import ColorDomain
-from src.experience_manager import ExperienceManager
 
 
 def run_experience(config: str):

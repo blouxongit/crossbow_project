@@ -1,7 +1,7 @@
 import cv2 as cv
 
 from constants import AvailableProjectileFinderMethods
-from data_types import Point2D
+from data_types.data_types import Point2D
 
 # If you wish to add another function to find the projectiles you need to :
 # 1- Add another enumeration type in the constants file

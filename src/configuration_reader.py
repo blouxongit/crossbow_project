@@ -40,9 +40,9 @@ class Config:
     def _get_intrinsic_matrix_from_params(self, focal_x, focal_y, skew, principal_point_x, principal_point_y):
         return np.array([[focal_x, skew, principal_point_x], [0, focal_y, principal_point_y], [0, 0, 1]])
 
-    def _get_extrinsic_matrix_from_params(self, rotation, position: np.ndarray):
-        position = np.reshape(position, (3, 1))
-        return np.hstack([rotation, position])
+    def _get_extrinsic_matrix_from_params(self, rotation, translation: np.ndarray):
+        translation = -np.reshape(translation, (3, 1))
+        return np.hstack([rotation, translation])
 
     def _extract_camera_config(self, camera_identifier: CameraIdentifier):
         if camera_identifier == CameraIdentifier.LEFT_CAMERA:
@@ -56,17 +56,17 @@ class Config:
         skew = config_camera["skew"]
         ppx = config_camera["principalPointX"]
         ppy = config_camera["principalPointY"]
-        position = np.array(config_camera["position"])
-        yaw = config_camera["yaw"]
-        pitch = config_camera["pitch"]
-        roll = config_camera["roll"]
+        translation = np.array(config_camera["position"])
+        alpha = config_camera["alpha"]
+        beta = config_camera["beta"]
+        gamma = config_camera["gamma"]
         framerate = config_camera["framerate"]
         images_folder_path = config_camera["imagesFolderPath"]
 
-        rotation = Rot.from_euler("xyz", [yaw, pitch, roll], degrees=True).as_matrix()
+        rotation = Rot.from_euler("xyz", [alpha, beta, gamma], degrees=True).as_matrix()
 
         intrinsic_matrix = self._get_intrinsic_matrix_from_params(focal_x, focal_y, skew, ppx, ppy)
-        extrinsinc_matrix = self._get_extrinsic_matrix_from_params(rotation, position)
+        extrinsinc_matrix = self._get_extrinsic_matrix_from_params(rotation, translation)
 
         return intrinsic_matrix, extrinsinc_matrix, framerate, images_folder_path
 
