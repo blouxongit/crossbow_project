@@ -1,6 +1,6 @@
 import numpy as np
 
-from managers import files_manager
+from utils.utils import read_image
 
 
 class Point2D:
@@ -142,8 +142,8 @@ class TimedImagePair(TimedData):
     @classmethod
     def from_timed_path_pair(cls, timed_path_pair: TimedPathPair):
         timestamp, path_pair = timed_path_pair.get()
-        left_image = files_manager.read_image(path_pair.left)
-        right_image = files_manager.read_image(path_pair.right)
+        left_image = read_image(path_pair.left)
+        right_image = read_image(path_pair.right)
         return cls(timestamp, left_image, right_image)
 
 

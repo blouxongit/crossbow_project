@@ -41,6 +41,9 @@ class ExperienceManager:
     def set_color_domain_to_find_projectile(self, new_color_domain: ColorDomain):
         self._image_pair_processor.set_color_domain_to_find_projectile(new_color_domain)
 
+    def set_image_sampling_rate(self, new_image_sampling_rate: int):
+        self._files_manager.set_image_sampling_rate(new_image_sampling_rate)
+
     def _assign_images(self, matching_image_pair: ImagePair):
         self._image_pair_processor.set_image_pair_to_camera_pair(matching_image_pair)
 
@@ -263,7 +266,7 @@ class ExperienceManager:
         df = pd.DataFrame(data)
 
         file_name = save_to if save_to.endswith(".csv") else save_to + ".csv"
-        result_dir = Path(__file__).resolve().parent.parent / "results"
+        result_dir = Path(__file__).resolve().parent.parent.parent / "results"
         result_dir.mkdir(parents=True, exist_ok=True)
         file_path = result_dir / file_name
         df.to_csv(file_path, index=False, float_format="%.12f", na_rep="NaN")

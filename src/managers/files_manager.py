@@ -2,12 +2,9 @@ from copy import deepcopy
 from pathlib import Path
 from typing import List, Tuple, Union
 
-import cv2 as cv
-import numpy as np
-
 from configuration_reader import Config
 from constants import ALLOWED_IMAGE_FORMATS
-from data_types.data_types import Pair, TimedPathPair
+from data_types.data_types import TimedPathPair
 from src.constants import CameraIdentifier
 
 
@@ -33,9 +30,13 @@ class FilesManager:
         )
 
     def set_image_sampling_rate(self, new_image_sampling_rate: int):
+        max_sampling_rate = len(self._persistent_storage_list_timed_matching_image_path_pair) // 3
         assert (
             isinstance(new_image_sampling_rate, int) and new_image_sampling_rate > 0
         ), "The sampling rate must be greater than 1. "
+        assert (
+            new_image_sampling_rate < max_sampling_rate
+        ), f"The sampling rate is too high: you will not be able to compute kinematics. The maximal sampling rate is {max_sampling_rate}"
         self._list_timed_matching_image_path_pair = self._persistent_storage_list_timed_matching_image_path_pair[
             ::new_image_sampling_rate
         ]
@@ -100,7 +101,3 @@ class FilesManager:
         ):
             return False
         return self._directory_images_left_camera.is_dir() and self._directory_images_right_camera.is_dir()
-
-
-def read_image(image_path: Union[str, Path], in_grayscale: bool = False) -> np.ndarray:
-    return cv.imread(image_path, cv.IMREAD_GRAYSCALE if in_grayscale else cv.IMREAD_COLOR)

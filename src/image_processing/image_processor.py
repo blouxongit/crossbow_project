@@ -1,11 +1,10 @@
 import cv2 as cv
 import numpy as np
 
-from camera import HighSpeedCamera
 from constants import AvailableProjectileFinderMethods
 from data_types.data_types import ImagePair, Pair, Point2D, Point2DPair
-from image_processing.camera import CameraSetup
-from projectile_finder import ProjectileFinders
+from image_processing.camera import CameraSetup, HighSpeedCamera
+from image_processing.projectile_finder import ProjectileFinders
 from src.constants import ColorDomain
 
 
