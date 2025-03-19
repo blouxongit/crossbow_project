@@ -66,8 +66,12 @@ You can choose to add other formats in the [./src/constants.py](../src/constants
 ### How does it create the pair of images 
 
 When I asked about the high speed cameras used at the school, it appears there is already a mechanism to synchronize the capture of many cameras. This is increadibly useful for us, as we do not have to deal with complex matching methods (based on timestamps for instance).  
-The function we use is `create_list_timed_matching_image_path_pair`. It itself calls `find_closest_image_path_to_form_pair`.  
-Because we are lucky to have this setup (synchronization), the last function is trivial. Otherwise, this is the function that would require a bit of logic to form the appropriate pairs of images.
+**This class is constructed on these assumptions :**
+- The images are already synchronized for both cameras
+- The images names are in order (something like *image_1.tif*, *image_2.tif*...  
+We must be able to sort them by name !
+
+The timestamp associated to the pair of images is initiated by this class, in the event somoene would like to use this project, but would not posess a synchronization tool. In this situation, one would need to build a method to match the closest pair of images in time (something based on timestamp reading, most likely form image name.)
 
 ---
 
