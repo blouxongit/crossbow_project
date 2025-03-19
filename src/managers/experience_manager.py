@@ -45,7 +45,7 @@ class ExperienceManager:
         self._image_pair_processor.set_image_pair_to_camera_pair(matching_image_pair)
 
     def extract_projectile_2d_coordinates_in_image_pairs(self, *args, **kwargs):
-        for timed_matching_image_path_pair in self._files_manager.list_timed_matching_image_path_pair:
+        for timed_matching_image_path_pair in self._files_manager.get_list_timed_matching_image_path_pair():
             timed_matching_image_pair = TimedImagePair.from_timed_path_pair(timed_matching_image_path_pair)
             self._assign_images(matching_image_pair=timed_matching_image_pair.get_data())
 
