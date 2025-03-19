@@ -133,6 +133,8 @@ Their purpose will reveal to you if you keep reading this...
 
 ## The ProjectileFinder
 
+### The class
+
 This [class](../src/image_processing/projectile_finder.py) is absolutely **CRUCIAL** in the code. This class is responsible for providing the methods of detection in the images. The aim of this class is to be able to be easily expanded. That is, you should be able to add your own detection methods easily wihtout having to spend too much time on how is the code working elsewhere.  
 The class itself is very small: 1 attribute and 1 method. 
 
@@ -148,6 +150,26 @@ Now the method:
 
 That's it, as simple as that.
 
+
+### The available finding methods
+
+---
+
+`FIND_CIRCLES`
+ 
+This method uses the openCV function [houghCircles](https://docs.opencv.org/4.x/dd/d1a/group__imgproc__feature.html#ga47849c3be0d0406ad3ca45db65a25d2d).  
+It takes as params:  
+- **Parameter:**  
+  - `img_grayscale` (`np.ndarray`): The graysclae image on which we want to detect the circles.
+  - `min_radius` (`float`): The minimal radius of the circle to be detected (in pixels).
+  - `max_radius` (`float`): The maximal radius of the circle to be detected (in pixels).
+
+Since this function works with grayscale images, you should call beforehand :  
+`set_color_domain_to_find_projectile(ColorDomain.GRAYSCLAE)`. This is explained further in the [ExperienceManager](#the-experiencemanager).
+
+The classical openCV method allows for more parameters, but these ones have been tuned based on the images samples I was given when developing this project.
+
+---
 
 ### How to add my own detection method ?
 
