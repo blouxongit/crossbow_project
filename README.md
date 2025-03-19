@@ -57,13 +57,22 @@ def run_experience(config: str):
 
 ```
 
+## Roadmap
 
+This section contains a small list of changes that could be made to improve the code. If I were to keep working on this repo, I would do that first.  
+
+- Add unitary testing code
+- Offer the possibility to decide of a starting point for the images in the FilesManager (look for the TODO in the code)
+- Properly define all the data types and remain consistent with them
+- Offer the possibility to reduce the size of the images, for faster image processing (images are 2048x1024 !!!)
+- Eventually offer the possibility to determine the projection matrix from an image see this [opencv tutorial](https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html)
 
 ## Contributing
 
 The project was intentionally designed to be scalable and easily modifiable. It is likely that I will not work further on the project. Therefore, this repository can be forked and used/improved for your own specific needs.  
 The main point for improvement is the possibility to add other detector functions. These functions could be, for example, machine learning models trained on specific objects (let's say a drone for instance...).  
 The process for adding your own function is described in the [documentation](documentation/README.md).
+
 
 ## License
 
