@@ -23,7 +23,8 @@ This configuration file requires the characteristics of both cameras used:
 **You are free to chose your unit system, but no matter what you do, you MUST remain consistent !!!**
 > I highly recommend using the metric system since the focals of the cameras are almost always given in the metric system.
 
-The extrinsic parameters also require angles. The choice not to use the classical yaw, pitch, roll angles was made intentionally, to not confuse the reader, since the frame used is not the same as the one on an aircraft. Instead, we use the alpha, beta and gamma angles. These angles design the rotations around the X,Y and Z axis, with respect to the world coordinate system.  
+The extrinsic parameters also require angles. The choice not to use the classical yaw, pitch, roll angles was made intentionally, to not confuse the reader, since the frame used is not the same as the one on an aircraft. Instead, we use the alpha, beta and gamma angles. These angles design the extrinsic rotations around the X,Y and Z axis, with respect to the world coordinate system. **The angles must be in degrees !**   
+If you are not what do I mean about the angles of the extrinsic rotations, feel free to check the [wikipedia page](https://en.wikipedia.org/wiki/Euler_angles).  
 The camera reference system is an orthogonal direct frame, as shown below : 
 
 ![camera_reference_system](./images/camera_frame.png)  
@@ -131,7 +132,7 @@ Of course, now that we set our data types, we can combine them to make more usef
 - TimedPoint2DPair
 - ...
 
-At this point, I am pretty sure the code is ugly and could be optimized and much prettier. However, this works like that and we are not yet at the point where we have types that we lose track of some.
+At this point, I am pretty sure the code is ugly and could be optimized and much prettier. However, this works like that and we are not yet at the point where we have so many types that we lose track of some.
 
 ---
 
