@@ -12,7 +12,7 @@ The overall (simplified) architecture of this project is visible hereafter:
 ## The configuration file
 
 First things first, in order to run, the tool needs to be provided a configuration file. This configuration file is a simple JSON file that gives information about the conditions of the experience. This is the only thing that needs to be filled out manually by the user.  
-An example of configuration file is provided : [./utils/configuration_example.json](../utils/configuration_example.json).  
+An example of configuration file is provided : [./configuration_example.json](../configuration_example.json).  
 
 ### The content of the configuration file
 
@@ -256,6 +256,14 @@ The required color domain should be referenced in the [ProjectileFinder section]
 
 - **Parameter:**  
   - `domain` (`ColorDomain`): The chosen color domain.
+
+---
+
+#### `set_image_sampling_rate(N: int)`
+
+This function calls the function of the same name in the [FilesManager](#the-filesmanager) class. It allows to downsize the number of images processed. If N=2, every second image is processed. If N=3, every third image is processed and so on.
+- **Parameter:**  
+  - `N` (`int`): The sampling value. If N < 1, an error is returned. If N is too large to allow to compute the kinematics, an error is returned.
 
 ---
 
