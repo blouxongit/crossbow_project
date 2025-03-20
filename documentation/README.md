@@ -191,7 +191,7 @@ The classical openCV method allows for more parameters, but these ones have been
 
 As said above, the objective of this class is to be easily expandable. You may add your own method using the following protocol:
 
-1. Write the method. The only restriction is that your method **MUST** return a `Point2D` object.
+1. Write the method. The only restrictions are that the method first's argument **MUST** be the image and your method **MUST** return a `Point2D` object.
 2. Add an enumeration key to your method. The key name should represent your method, and be added to the `AvailableProjectileFinderMethods` enumeration, in the [./src/constants.py](../src/constants.py) file.
 3. Add the mapping to the `_finder_function_mapping` attribute of the [ProjectileFinder](../src/image_processing/projectile_finder.py) class.
 
